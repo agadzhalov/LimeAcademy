@@ -10,9 +10,9 @@ Functionalities implemented:
 2. BookBorrow.sol
     1. Borrow a book
     2. Return a book
-    3. Add a unique address which borrowed concrete book in a Set data structure
+    3. Add a unique address which borrowed a concrete book in a Set data structure
 3. BookUtils.sol
-    1. Shows current avaible copies of a concrete book
+    1. Shows current available copies of a concrete book
     2. Shows history of addresses ever borrowed a concrete book
 
 To run:
