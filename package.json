@@ -18,7 +18,6 @@
   },
   "homepage": "https://github.com/agadzhalov/LimeAcademy#readme",
   "devDependencies": {
-    "@nomiclabs/hardhat-etherscan": "^3.1.0",
     "dotenv": "^16.0.3",
     "hardhat": "^2.11.2"
   },
