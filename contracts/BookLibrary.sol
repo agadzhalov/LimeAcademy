@@ -16,7 +16,15 @@ contract BookLibrary is Ownable {
 
     Book[] public books;
 
+    struct AvailableBookDetails {
+        uint id;
+        string name;
+    }
+
+    AvailableBookDetails[] public availableBookDetails;
+
     mapping(uint32 => uint32) public availableBooks;
+    mapping(string => uint32) public availableNameToId;
     mapping(string => bool) public isBookAdded;
     mapping(address => mapping(uint32 => bool)) public borrowedBooks; 
 
@@ -36,9 +44,16 @@ contract BookLibrary is Ownable {
         require (_copies > 0, "New books' copies must be more than zero");
         uint32 _bookId = uint32(books.length);
         books.push(Book(_name, _author, _bookId, _copies));
-        availableBooks[_bookId] = _copies;
         isBookAdded[_name] = true;
+        availableBooks[_bookId] = _copies;
+        insertAvailableBook(_bookId, _name);
         emit BookAddedEvent(_name, _author, _copies);
+    }
+
+    function insertAvailableBook(uint32 _bookId, string memory _name) public onlyOwner {
+        availableBookDetails.push(AvailableBookDetails(_bookId, _name));
+        uint32 lastId = uint32(availableBookDetails.length - 1);
+        availableNameToId[_name] = lastId;
     }
 
 }
