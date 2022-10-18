@@ -1,26 +1,13 @@
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 
-const main = async (privateKey: string, hre: HardhatRuntimeEnvironment) => {
-  const wallet = new ethers.Wallet(privateKey, hre.ethers.provider);
-  //await hre.run("print", { message: "Address: " + wallet.address});
-  //await hre.run("print", { message: "Balance: " + (await wallet.getBalance()).toString()});
-
-  const BookUtils = await ethers.getContractFactory("BookUtils", wallet);
+const deployBookLibraryContract = async(args: any, hre: HardhatRuntimeEnvironment) => {
+  await hre.run("compile");
+  const [deployer] = await ethers.getSigners();
+  await hre.run("print", { message: "Depoying with address: " + deployer.address + "\n" + "Balance: " + (await deployer.getBalance()).toString()});
+  const BookUtils = await ethers.getContractFactory("BookUtils");
   const bookUtils = await BookUtils.deploy();
   await bookUtils.deployed();
-  await hre.run("print", { message: "BookUtils deployed to: " + bookUtils.address });
-};
-
-export function executeDeploy(privateKey: string, hre: HardhatRuntimeEnvironment) {
-  try {
-    main(privateKey, hre);
-  } catch (error) {
-    console.error(error);
-    process.exitCode = 1;
-  }
+  await hre.run("print", { message: "BookUtils deployed to: " + bookUtils.address});
 }
 
-// main().catch((error) => {
-//   console.error(error);
-//   process.exitCode = 1;
-// });
+export default deployBookLibraryContract;
