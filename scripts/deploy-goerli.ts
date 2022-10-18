@@ -5,11 +5,19 @@ const deployBookLibraryContract = async(args: any, hre: HardhatRuntimeEnvironmen
   const [deployer] = await ethers.getSigners();
   await hre.run("print", { message: "Depoying with address: " + deployer.address + "\n" + "Balance: " + (await deployer.getBalance()).toString()});
 
-  const BookUtils = await ethers.getContractFactory("BookUtils");
-  const bookUtils = await BookUtils.deploy();
-  await bookUtils.deployed();
-  
-  await hre.run("print", { message: "BookUtils deployed to: " + bookUtils.address});
+  const BookLibrary = await ethers.getContractFactory("BookLibrary");
+  const bookLibrary = await BookLibrary.deploy();
+  await bookLibrary.deployed();
+
+  await hre.run("print", { message: "BookLibrary deployed to: " + bookLibrary.address});
+
+  console.log("Wait 60 seconds for verification");
+  await new Promise(f => setTimeout(f, 60000));
+
+  await hre.run("verify:verify", {
+    address: bookLibrary.address,
+    constructorArguments: [],
+  });
 }
 
 export default deployBookLibraryContract;
