@@ -1,6 +1,6 @@
 import { HardhatUserConfig, subtask, task } from "hardhat/config";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
-import  deployBookLibraryContract  from './scripts/deploy-goerli';
+import  deployGoerli  from './scripts/deploy-goerli';
 import  deployLocally  from './scripts/deploy-localhost';
 
 import * as dotenv from "dotenv";
@@ -41,7 +41,7 @@ task("deploy-localhost", "Deploys contract on Goerli network")
 
 task("deploy-goerli", "Deploys contract on Goerli network")
   .setAction(async(args: any, hre: HardhatRuntimeEnvironment) => {
-    await deployBookLibraryContract(args, hre);
+    await deployGoerli(args, hre);
   });
 
 subtask("print", "Prints valuable info")
