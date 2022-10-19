@@ -26,7 +26,6 @@ contract BookLibrary is Ownable {
     mapping(uint32 => uint32) public availableBooks;
     mapping(string => uint32) public availableNameToId;
     mapping(string => bool) public isBookAdded;
-    mapping(address => mapping(uint32 => bool)) public borrowedBooks; 
 
     event BookAddedEvent(string name, string author, uint32 copies);
 

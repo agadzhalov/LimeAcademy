@@ -6,6 +6,8 @@ import "./BookLibrary.sol";
 
 contract BookBorrow is BookLibrary {
 
+    mapping(address => mapping(uint32 => bool)) public borrowedBooks; 
+    
     struct HistoryAddressSet {
         address[] addresses;
         mapping (address => bool) isIn;
