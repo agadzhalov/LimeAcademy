@@ -41,6 +41,7 @@ contract BookLibrary is Ownable {
     }
 
     function addNewBook(string memory _name, string memory _author, uint32 _copies) public onlyOwner onlyUniqueBooks(_name) {
+        require(bytes(_name).length != 0 && bytes(_author).length != 0, "Book title and author can not be empty");
         require (_copies > 0, "New books' copies must be more than zero");
         uint32 _bookId = uint32(books.length);
         books.push(Book(_name, _author, _bookId, _copies));
@@ -50,7 +51,7 @@ contract BookLibrary is Ownable {
         emit BookAddedEvent(_name, _author, _copies);
     }
 
-    function insertAvailableBook(uint32 _bookId, string memory _name) public onlyOwner {
+    function insertAvailableBook(uint32 _bookId, string memory _name) internal onlyOwner {
         availableBookDetails.push(AvailableBookDetails(_bookId, _name));
         uint32 lastId = uint32(availableBookDetails.length - 1);
         availableNameToId[_name] = lastId;
