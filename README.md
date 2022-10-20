@@ -1,4 +1,4 @@
-# Week 0 LimeAcademy - Book Library - main task
+# Book Library - LimeAcademy
 
 Functionalities implemented:
 
@@ -15,12 +15,24 @@ Functionalities implemented:
     1. Shows current available copies of a concrete book
     2. Shows history of addresses ever borrowed a concrete book
 
-To run:
+To deploy locally you will need two powershells:
+
+Shell 1:
+```shell
+npx hardhat node
+```
+Shell 2:
 
 ```shell
-npx hardhat run scripts/deploy.js
+npx hardhat deploy-localhost --network localhost
 ```
 
-Result is not properly deploying and verifing the smart contracts
+Deploy on Goerli:
 
-Example TX on Goerli: 0xe3788874a76F376248399E79513ce8c0fcb20ECC
+```shell
+npx hardhat run deploy-goerli --network goerli
+```
+
+Result is properly deployed and verified on Goerli testnet
+
+Example TX on Goerli: 0xF4567F559D423981f077B60F01AA9B9D34624031
