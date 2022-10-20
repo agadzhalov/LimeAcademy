@@ -63,6 +63,76 @@ describe("BookBorrow", function () {
     });
 
     // return a book you've borrowed
+    it("Should return a borrowed book", async function () {
+        const addNewBookTx = await bookBorrow.addNewBook("The Godfather", "Mario Puzo", 2);
+        await addNewBookTx.wait();
+
+        const borrowABookTx = await bookBorrow.borrowABook(0);
+        await borrowABookTx.wait();
+       
+        const returnABookTx = await bookBorrow.returnBook(0);
+        await returnABookTx.wait();
+
+        expect(await bookBorrow.borrowedBooks(owner.address, 0)).to.equal(false);
+    });
+
     // try returning a book you haven't borrowed
+    it("Should throw when trying to return a book user hadn't borrowed", async function () {
+        const addNewBookTx = await bookBorrow.addNewBook("The Godfather", "Mario Puzo", 2);
+        await addNewBookTx.wait();       
+        
+        await  expect(bookBorrow.returnBook(0)).to.be.revertedWith("You didn't borrow this book");
+    });
+    
+    // try returning a book with non existing id
+    it("Should throw when trying to return a book with non existing ID", async function () {
+        const addNewBookTx = await bookBorrow.addNewBook("The Godfather", "Mario Puzo", 2);
+        await addNewBookTx.wait();       
+        
+        await  expect(bookBorrow.returnBook(5)).to.be.revertedWith("Non existing book ID");
+    });
+
     // should be able to borrow a book when returned from others
+    it("Should be able to borrow a book when returned from others", async function () {
+        const addNewBookTx = await bookBorrow.addNewBook("The Godfather", "Mario Puzo", 1);
+        await addNewBookTx.wait();  
+        
+        const borrowAddr1BookTx = await bookBorrow.connect(addr1).borrowABook(0);
+        await borrowAddr1BookTx.wait();
+
+        expect(await bookBorrow.borrowedBooks(addr1.address, 0)).to.equal(true);
+
+        const returnAddr1BookTx = await bookBorrow.connect(addr1).returnBook(0);
+        await returnAddr1BookTx.wait();
+
+        const borrowOwnerBookTx = await bookBorrow.connect(owner).borrowABook(0);
+        await borrowOwnerBookTx.wait();
+        expect(await bookBorrow.borrowedBooks(owner.address, 0)).to.equal(true);
+    });
+    
+    // events
+    it("Shoud sent event that a book was borrowed", async function () {
+        const addNewBookTx = await bookBorrow.addNewBook("The Godfather", "Mario Puzo", 5);
+        await addNewBookTx.wait();
+
+        const borrowABookTx = await bookBorrow.borrowABook(0);
+        await borrowABookTx.wait();
+        
+        const book = await bookBorrow.books(0);
+        await expect(borrowABookTx).to.emit(bookBorrow, 'BookBorrowedEvent').withArgs(book.name, book.author);
+    });
+
+    it("Shoud sent event that a book was returned", async function () {
+        const addNewBookTx = await bookBorrow.addNewBook("The Godfather", "Mario Puzo", 5);
+        await addNewBookTx.wait();
+
+        const borrowABookTx = await bookBorrow.borrowABook(0);
+        await borrowABookTx.wait();
+        
+        const returnBookTx = await bookBorrow.returnBook(0);
+        await returnBookTx.wait();
+
+        const book = await bookBorrow.books(0);
+        await expect(returnBookTx).to.emit(bookBorrow, 'BookReturnEvent').withArgs(book.name, book.author);
+    });
 });
