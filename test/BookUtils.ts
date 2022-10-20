@@ -25,7 +25,7 @@ describe("BookUtils", function () {
         const addNewBookTx2 = await bookUtils.addNewBook("Hooked", "Nir Eyal", 2);
         await addNewBookTx2.wait();
 
-        expect(await bookUtils.showAvailableBooks()).to.deep.equal([[0, "The Godfather"], [1, "Hooked"]]);
+        expect(await bookUtils.showAvailableBooks()).to.deep.equal([[1, "The Godfather"], [2, "Hooked"]]);
     });
 
     it("Should list all available books after borrowed book", async function () {
@@ -35,10 +35,10 @@ describe("BookUtils", function () {
         const addNewBookTx2 = await bookUtils.addNewBook("Hooked", "Nir Eyal", 2);
         await addNewBookTx2.wait();
 
-        const borrowABookTx = await bookUtils.borrowABook(0);
+        const borrowABookTx = await bookUtils.borrowABook(1);
         await borrowABookTx.wait();
 
-        expect(await bookUtils.showAvailableBooks()).to.deep.equal([[0, ""], [1, "Hooked"]]);
+        expect(await bookUtils.showAvailableBooks()).to.deep.equal([[0, ""], [2, "Hooked"]]);
     });
 
     it("Should list all available books after a book was returned", async function () {
@@ -48,26 +48,26 @@ describe("BookUtils", function () {
         const addNewBookTx2 = await bookUtils.addNewBook("Hooked", "Nir Eyal", 2);
         await addNewBookTx2.wait();
 
-        const borrowABookTx = await bookUtils.borrowABook(0);
+        const borrowABookTx = await bookUtils.borrowABook(1);
         await borrowABookTx.wait();
 
-        const returnABookTx = await bookUtils.returnBook(0);
+        const returnABookTx = await bookUtils.returnBook(1);
         await returnABookTx.wait();
 
-        expect(await bookUtils.showAvailableBooks()).to.deep.equal([[0, ""], [1, "Hooked"], [0, "The Godfather"]]);
+        expect(await bookUtils.showAvailableBooks()).to.deep.equal([[0, ""], [2, "Hooked"], [1, "The Godfather"]]);
     });
 
     it("Should list all addresses that ever borrowed a book", async function () {
         const addNewBookTx = await bookUtils.addNewBook("The Godfather", "Mario Puzo", 5);
         await addNewBookTx.wait();
 
-        const borrowABookTx = await bookUtils.connect(addr1).borrowABook(0);
+        const borrowABookTx = await bookUtils.connect(addr1).borrowABook(1);
         await borrowABookTx.wait();
         
-        const borrowABookTx2 = await bookUtils.connect(owner).borrowABook(0);
+        const borrowABookTx2 = await bookUtils.connect(owner).borrowABook(1);
         await borrowABookTx2.wait();
 
-        expect(await bookUtils.historyOfBorrowAddresses(0)).to.deep.equal([
+        expect(await bookUtils.historyOfBorrowAddresses(1)).to.deep.equal([
             '0x70997970C51812dc3A010C7d01b50e0d17dc79C8',
             '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266'
           ]

@@ -3,6 +3,7 @@ pragma solidity 0.8.17;
 pragma abicoder v2;
 
 import "./BookLibrary.sol";
+import "hardhat/console.sol";
 
 contract BookBorrow is BookLibrary {
 
@@ -24,18 +25,18 @@ contract BookBorrow is BookLibrary {
         borrowedBooks[msg.sender][_bookId] = true;
         availableBooks[_bookId] = availableBooks[_bookId] - 1;
         if (availableBooks[_bookId] == 0) {
-            delete availableBookDetails[availableNameToId[books[_bookId].name]];
+            delete availableBookDetails[availableNameToId[books[_bookId-1].name]-1];
         }
         addAddressBorrowedABook(_bookId, msg.sender);
-        emit BookBorrowedEvent(books[_bookId].name, books[_bookId].author);
+        emit BookBorrowedEvent(books[_bookId-1].name, books[_bookId-1].author);
     }
 
     function returnBook(uint32 _bookId) external onlyExistingBookIds(_bookId) {
         require (borrowedBooks[msg.sender][_bookId] == true, "You didn't borrow this book");
         borrowedBooks[msg.sender][_bookId] = false;
         availableBooks[_bookId] = availableBooks[_bookId] + 1;
-        insertAvailableBook(_bookId, books[_bookId].name);
-        emit BookReturnEvent(books[_bookId].name, books[_bookId].author);
+        insertAvailableBook(_bookId, books[_bookId-1].name);
+        emit BookReturnEvent(books[_bookId-1].name, books[_bookId-1].author);
     }
 
     /**

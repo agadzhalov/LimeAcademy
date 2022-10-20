@@ -3,9 +3,13 @@ pragma solidity 0.8.17;
 pragma abicoder v2;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/utils/Counters.sol";
 import "hardhat/console.sol";
 
 contract BookLibrary is Ownable {
+
+    using Counters for Counters.Counter;
+    Counters.Counter private _bookIds;
 
     struct Book {
         string name;
@@ -42,18 +46,22 @@ contract BookLibrary is Ownable {
     function addNewBook(string memory _name, string memory _author, uint32 _copies) public onlyOwner onlyUniqueBooks(_name) {
         require(bytes(_name).length != 0 && bytes(_author).length != 0, "Book title and author can not be empty");
         require (_copies > 0, "New books' copies must be more than zero");
-        uint32 _bookId = uint32(books.length);
-        books.push(Book(_name, _author, _bookId, _copies));
+        uint32 newBookId = _generateNewBookId();
+        books.push(Book(_name, _author, newBookId, _copies));
         isBookAdded[_name] = true;
-        availableBooks[_bookId] = _copies;
-        insertAvailableBook(_bookId, _name);
+        availableBooks[newBookId] = _copies;
+        insertAvailableBook(newBookId, _name);
         emit BookAddedEvent(_name, _author, _copies);
     }
 
     function insertAvailableBook(uint32 _bookId, string memory _name) internal {
         availableBookDetails.push(AvailableBookDetails(_bookId, _name));
-        uint32 lastId = uint32(availableBookDetails.length - 1);
-        availableNameToId[_name] = lastId;
+        availableNameToId[_name] = _bookId;
+    }
+
+    function _generateNewBookId() private returns(uint32){
+        _bookIds.increment();
+        return uint32(_bookIds.current());
     }
 
 }

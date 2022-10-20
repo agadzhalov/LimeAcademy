@@ -18,6 +18,8 @@ describe("BookLibrary", function () {
         await addNewBookTx.wait();
 
         const book = await bookLibrary.books(0);
+        
+        expect(book.id).to.equal(1);
         expect(book.name).to.equal("The Godfather");
         expect(book.author).to.equal("Mario Puzo");
         expect(book.copies).to.equal(5);
