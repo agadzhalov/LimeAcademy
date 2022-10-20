@@ -19,7 +19,6 @@ describe("BookBorrow", function () {
         await bookBorrow.deployed();
     });
 
-    // borrow a book
     it("Should borrow a book", async function () {
         const addNewBookTx = await bookBorrow.addNewBook("The Godfather", "Mario Puzo", 5);
         await addNewBookTx.wait();
@@ -30,7 +29,6 @@ describe("BookBorrow", function () {
         expect(await bookBorrow.borrowedBooks(owner.address, 0)).to.equal(true);
     });
 
-    // try borrow tha same book twice
     it("Should throw on trying to borrow the same book twice", async function () {
         const addNewBookTx = await bookBorrow.addNewBook("The Godfather", "Mario Puzo", 5);
         await addNewBookTx.wait();
@@ -41,7 +39,6 @@ describe("BookBorrow", function () {
         await expect(bookBorrow.borrowABook(0)).to.be.revertedWith("You can borrow only one copy of this book");
     });
     
-    // try borrow a book when not available
     it("Should throw on trying to borrow a book which is not available", async function () {
         const addNewBookTx = await bookBorrow.addNewBook("The Godfather", "Mario Puzo", 2);
         await addNewBookTx.wait();
@@ -55,14 +52,12 @@ describe("BookBorrow", function () {
         await expect(bookBorrow.connect(owner).borrowABook(0)).to.be.revertedWith("Book copy is not available.");
     });
 
-    // try borrow a book when not available
     it("Should throw on trying to borrow a book not inserted", async function () {
         await expect(bookBorrow.borrowABook(0)).to.be.revertedWith("Book copy is not available."); // think more on this case
         await expect(bookBorrow.borrowABook(1)).to.be.revertedWith("Non existing book ID");
         await expect(bookBorrow.borrowABook(4253)).to.be.revertedWith("Non existing book ID");
     });
 
-    // return a book you've borrowed
     it("Should return a borrowed book", async function () {
         const addNewBookTx = await bookBorrow.addNewBook("The Godfather", "Mario Puzo", 2);
         await addNewBookTx.wait();
@@ -76,7 +71,6 @@ describe("BookBorrow", function () {
         expect(await bookBorrow.borrowedBooks(owner.address, 0)).to.equal(false);
     });
 
-    // try returning a book you haven't borrowed
     it("Should throw when trying to return a book user hadn't borrowed", async function () {
         const addNewBookTx = await bookBorrow.addNewBook("The Godfather", "Mario Puzo", 2);
         await addNewBookTx.wait();       
@@ -84,15 +78,13 @@ describe("BookBorrow", function () {
         await  expect(bookBorrow.returnBook(0)).to.be.revertedWith("You didn't borrow this book");
     });
     
-    // try returning a book with non existing id
     it("Should throw when trying to return a book with non existing ID", async function () {
         const addNewBookTx = await bookBorrow.addNewBook("The Godfather", "Mario Puzo", 2);
         await addNewBookTx.wait();       
         
         await  expect(bookBorrow.returnBook(5)).to.be.revertedWith("Non existing book ID");
     });
-
-    // should be able to borrow a book when returned from others
+s
     it("Should be able to borrow a book when returned from others", async function () {
         const addNewBookTx = await bookBorrow.addNewBook("The Godfather", "Mario Puzo", 1);
         await addNewBookTx.wait();  
@@ -110,7 +102,6 @@ describe("BookBorrow", function () {
         expect(await bookBorrow.borrowedBooks(owner.address, 0)).to.equal(true);
     });
     
-    // events
     it("Shoud sent event that a book was borrowed", async function () {
         const addNewBookTx = await bookBorrow.addNewBook("The Godfather", "Mario Puzo", 5);
         await addNewBookTx.wait();
