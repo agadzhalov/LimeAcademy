@@ -84,7 +84,7 @@ describe("BookBorrow", function () {
         
         await  expect(bookBorrow.returnBook(5)).to.be.revertedWith("Non existing book ID");
     });
-s
+
     it("Should be able to borrow a book when returned from others", async function () {
         const addNewBookTx = await bookBorrow.addNewBook("The Godfather", "Mario Puzo", 1);
         await addNewBookTx.wait();  
