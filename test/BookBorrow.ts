@@ -1,14 +1,16 @@
 import { expect } from "chai";
 import { ethers } from "hardhat";
+import { BookBorrow } from "../typechain-types";
+import type { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 
 describe("BookBorrow", function () {
     
-    let bookBorrowFactory;
-    let bookBorrow;
+    let bookBorrowFactory: any;
+    let bookBorrow: BookBorrow;
 
-    let owner;
-    let addr1;
-    let addr2;
+    let owner: SignerWithAddress;
+    let addr1: SignerWithAddress;
+    let addr2: SignerWithAddress;
 
     beforeEach(async () => {
         [owner, addr1, addr2] = await ethers.getSigners();

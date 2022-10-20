@@ -1,10 +1,11 @@
 import { expect } from "chai";
 import { ethers } from "hardhat";
+import { BookLibrary } from "../typechain-types";
 
 describe("BookLibrary", function () {
 
-    let bookLibraryFactory;
-    let bookLibrary;
+    let bookLibraryFactory: any; // ContractFactory is expected here
+    let bookLibrary: BookLibrary;
 
     beforeEach(async () => {
         bookLibraryFactory = await ethers.getContractFactory("BookLibrary");
