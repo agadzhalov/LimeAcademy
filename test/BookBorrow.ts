@@ -102,6 +102,22 @@ describe("BookBorrow", function () {
         expect(await bookBorrow.borrowedBooks(owner.address, 1)).to.equal(true);
     });
     
+    it("Should be able to borrow the same book after return", async function () {
+        const addNewBookTx = await bookBorrow.addNewBook("The Godfather", "Mario Puzo", 5);
+        await addNewBookTx.wait();
+
+        const borrowABookTx = await bookBorrow.borrowABook(1);
+        await borrowABookTx.wait();
+
+        const returnABookTx = await bookBorrow.returnBook(1);
+        await returnABookTx.wait();
+
+        const borrowABookTx2 = await bookBorrow.borrowABook(1);
+        await borrowABookTx2.wait();
+
+        expect(await bookBorrow.borrowedBooks(owner.address, 1)).to.equal(true);
+    });
+
     it("Shoud sent event that a book was borrowed", async function () {
         const addNewBookTx = await bookBorrow.addNewBook("The Godfather", "Mario Puzo", 5);
         await addNewBookTx.wait();
