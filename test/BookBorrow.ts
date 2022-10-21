@@ -61,19 +61,19 @@ describe("BookBorrow", function () {
     })
 
     it("Should throw on trying to borrow a book not inserted", async function () {
-        await expect(bookBorrow.borrowABook(ethers.constants.HashZero)).to.be.revertedWith("Non existing book ID"); 
+        await expect(bookBorrow.borrowABook(ethers.constants.HashZero)).to.be.revertedWith("Book is not existing in storage."); 
 
         const bookIdTwo = ethers.utils.keccak256(ethers.utils.concat([
             ethers.utils.toUtf8Bytes("The Four steps to the epiphany"), 
             ethers.utils.toUtf8Bytes("Steve Blank")
         ]));
-        await expect(bookBorrow.borrowABook(bookIdTwo)).to.be.revertedWith("Non existing book ID");
+        await expect(bookBorrow.borrowABook(bookIdTwo)).to.be.revertedWith("Book is not existing in storage.");
 
         const bookIdThree = ethers.utils.keccak256(ethers.utils.concat([
             ethers.utils.toUtf8Bytes(""), 
             ethers.utils.toUtf8Bytes("")
         ]));
-        await expect(bookBorrow.borrowABook(bookIdThree)).to.be.revertedWith("Non existing book ID");
+        await expect(bookBorrow.borrowABook(bookIdThree)).to.be.revertedWith("Book is not existing in storage.");
     });
 
     it("Should return a borrowed book", async function () {
@@ -100,7 +100,7 @@ describe("BookBorrow", function () {
         const addNewBookTx = await bookBorrow.addNewBook("The Godfather", "Mario Puzo", 2);
         await addNewBookTx.wait();       
         
-        await  expect(bookBorrow.returnBook(ethers.constants.HashZero)).to.be.revertedWith("Non existing book ID");
+        await  expect(bookBorrow.returnBook(ethers.constants.HashZero)).to.be.revertedWith("Book is not existing in storage.");
     });
 
     it("Should be able to borrow a book when returned from others", async function () {

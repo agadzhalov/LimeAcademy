@@ -19,6 +19,12 @@ contract BookBorrow is BookLibrary {
     event BookBorrowedEvent(string name, string author);
     event BookReturnEvent(string name, string author);
     
+    modifier onlyExistingBookIds(bytes32 _bookId) {
+        // @notice WITHOUT !
+        require (isCopyInserted[_bookId], "Book is not existing in storage.");
+        _;
+    }
+
     function borrowABook(bytes32 _bookId) external onlyExistingBookIds(_bookId) {
         require (availableCopiesMap[_bookId] > 0, "Book copy is not available.");
         require (borrowedBooks[msg.sender][_bookId] == false, "You can borrow only one copy of this book");

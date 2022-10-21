@@ -29,11 +29,6 @@ contract BookLibrary is Ownable {
         _;
     }
 
-    modifier onlyExistingBookIds(bytes32 _bookId) {
-        require (isCopyInserted[_bookId], "Non existing book ID");
-        _;
-    }
-
     function addNewBook(string memory _name, string memory _author, uint32 _copies) public onlyOwner onlyUniqueBooks(_name) {
         require(bytes(_name).length != 0 && bytes(_author).length != 0, "Book title and author can not be empty");
         require (_copies > 0, "New books' copies must be more than zero");
