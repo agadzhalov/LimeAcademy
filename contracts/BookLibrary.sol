@@ -16,7 +16,7 @@ contract BookLibrary is Ownable {
     
     Book[] public allBooks;
 
-    mapping(string => bool) public isBookAdded;
+    mapping(bytes32 => bool) public isBookAdded;
 
     mapping(bytes32 => uint32) public availableCopiesMap; // id => copies
     mapping(bytes32 => bool) public isCopyInserted; // id -> bool
@@ -24,16 +24,17 @@ contract BookLibrary is Ownable {
     
     event BookAddedEvent(string name, string author, uint32 copies);
 
-    modifier onlyUniqueBooks(string memory _name) {
-        require (!isBookAdded[_name], "Book already added");
+    modifier onlyUniqueBooks(string memory _name, string memory _author) {
+        bytes32 hashId = keccak256(abi.encodePacked(_name, _author));
+        require (!isBookAdded[hashId], "Book already added");
         _;
     }
 
-    function addNewBook(string memory _name, string memory _author, uint32 _copies) public onlyOwner onlyUniqueBooks(_name) {
+    function addNewBook(string memory _name, string memory _author, uint32 _copies) public onlyOwner onlyUniqueBooks(_name, _author) {
         require(bytes(_name).length != 0 && bytes(_author).length != 0, "Book title and author can not be empty");
         require (_copies > 0, "New books' copies must be more than zero");
         bytes32 hashId = keccak256(abi.encodePacked(_name, _author));
-        isBookAdded[_name] = true;
+        isBookAdded[hashId] = true;
         _setAvailableCopies(hashId, _name, _author, _copies);
         emit BookAddedEvent(_name, _author, _copies);
     }
