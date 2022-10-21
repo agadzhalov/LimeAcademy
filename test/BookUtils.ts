@@ -17,7 +17,7 @@ describe("BookUtils", function () {
         bookUtils = await bookUtilsFactory.deploy();
         await bookUtils.deployed();
     });
-
+    
     it("Should list all available books names", async function () {
         const addNewBookTx = await bookUtils.addNewBook("The Godfather", "Mario Puzo", 5);
         await addNewBookTx.wait();
@@ -25,7 +25,7 @@ describe("BookUtils", function () {
         const addNewBookTx2 = await bookUtils.addNewBook("Hooked", "Nir Eyal", 2);
         await addNewBookTx2.wait();
 
-        expect(await bookUtils.showAvailableBooks()).to.deep.equal([[1, "The Godfather"], [2, "Hooked"]]);
+        expect(await bookUtils.showAvailableBooks()).to.deep.equal([[1, "The Godfather", 5], [2, "Hooked", 2]]);
     });
 
     it("Should list all available books after borrowed book", async function () {
@@ -38,7 +38,7 @@ describe("BookUtils", function () {
         const borrowABookTx = await bookUtils.borrowABook(1);
         await borrowABookTx.wait();
 
-        expect(await bookUtils.showAvailableBooks()).to.deep.equal([[0, ""], [2, "Hooked"]]);
+        expect(await bookUtils.showAvailableBooks()).to.deep.equal([[1, "The Godfather", 0], [2, "Hooked", 2]]);
     });
 
     it("Should list all available books after a book was returned", async function () {
@@ -54,7 +54,7 @@ describe("BookUtils", function () {
         const returnABookTx = await bookUtils.returnBook(1);
         await returnABookTx.wait();
 
-        expect(await bookUtils.showAvailableBooks()).to.deep.equal([[0, ""], [2, "Hooked"], [1, "The Godfather"]]);
+        expect(await bookUtils.showAvailableBooks()).to.deep.equal([[1, "The Godfather", 1], [2, "Hooked", 2]]);
     });
 
     it("Should list all addresses that ever borrowed a book", async function () {

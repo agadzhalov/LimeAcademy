@@ -20,13 +20,10 @@ contract BookBorrow is BookLibrary {
     event BookReturnEvent(string name, string author);
     
     function borrowABook(uint32 _bookId) external onlyExistingBookIds(_bookId) {
-        require (availableBooks[_bookId] > 0, "Book copy is not available.");
+        require (availableCopiesMap[_bookId] > 0, "Book copy is not available.");
         require (borrowedBooks[msg.sender][_bookId] == false, "You can borrow only one copy of this book");
         borrowedBooks[msg.sender][_bookId] = true;
-        availableBooks[_bookId] = availableBooks[_bookId] - 1;
-        if (availableBooks[_bookId] == 0) {
-            delete availableBookDetails[availableNameToId[books[_bookId-1].name]-1];
-        }
+        updateAvailableCopies(_bookId, availableCopiesMap[_bookId] - 1);
         addAddressBorrowedABook(_bookId, msg.sender);
         emit BookBorrowedEvent(books[_bookId-1].name, books[_bookId-1].author);
     }
@@ -34,8 +31,7 @@ contract BookBorrow is BookLibrary {
     function returnBook(uint32 _bookId) external onlyExistingBookIds(_bookId) {
         require (borrowedBooks[msg.sender][_bookId] == true, "You didn't borrow this book");
         borrowedBooks[msg.sender][_bookId] = false;
-        availableBooks[_bookId] = availableBooks[_bookId] + 1;
-        insertAvailableBook(_bookId, books[_bookId-1].name);
+        updateAvailableCopies(_bookId, availableCopiesMap[_bookId] + 1);
         emit BookReturnEvent(books[_bookId-1].name, books[_bookId-1].author);
     }
 

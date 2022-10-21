@@ -20,16 +20,19 @@ contract BookLibrary is Ownable {
 
     Book[] public books;
 
-    struct AvailableBookDetails {
-        uint id;
-        string name;
-    }
-
-    AvailableBookDetails[] public availableBookDetails;
-
-    mapping(uint32 => uint32) public availableBooks;
-    mapping(string => uint32) public availableNameToId;
     mapping(string => bool) public isBookAdded;
+
+    mapping(uint32 => uint32) public availableCopiesMap; // id => copies
+    mapping(uint32 => bool) public isCopyInserted; // id -> bool
+    mapping(uint32 => uint) public availableIdToIndex; // id => index of array
+    
+    struct AvailableBooks {
+        uint32 id;
+        string name;
+        uint32 copies;
+    }
+    
+    AvailableBooks[] public allBooksAvailability;
 
     event BookAddedEvent(string name, string author, uint32 copies);
 
@@ -49,19 +52,25 @@ contract BookLibrary is Ownable {
         uint32 newBookId = _generateNewBookId();
         books.push(Book(_name, _author, newBookId, _copies));
         isBookAdded[_name] = true;
-        availableBooks[newBookId] = _copies;
-        insertAvailableBook(newBookId, _name);
+        setAvailableCopies(newBookId, _name, _copies);
         emit BookAddedEvent(_name, _author, _copies);
-    }
-
-    function insertAvailableBook(uint32 _bookId, string memory _name) internal {
-        availableBookDetails.push(AvailableBookDetails(_bookId, _name));
-        availableNameToId[_name] = _bookId;
     }
 
     function _generateNewBookId() private returns(uint32){
         _bookIds.increment();
         return uint32(_bookIds.current());
+    }
+
+    function setAvailableCopies(uint32 _bookId, string memory _name, uint32 _copies) internal {
+        availableCopiesMap[_bookId] = _copies;
+        isCopyInserted[_bookId] = true;
+        allBooksAvailability.push(AvailableBooks(_bookId, _name, _copies));
+        availableIdToIndex[_bookId] = allBooksAvailability.length - 1;
+    }
+
+    function updateAvailableCopies(uint32 _bookId, uint32 _copies) internal {
+        availableCopiesMap[_bookId] = _copies;
+        allBooksAvailability[availableIdToIndex[_bookId]].copies = availableCopiesMap[_bookId];
     }
 
 }
