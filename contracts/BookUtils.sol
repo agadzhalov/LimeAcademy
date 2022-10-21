@@ -10,7 +10,7 @@ contract BookUtils is BookBorrow {
         return allBooksAvailability;
     }
 
-    function historyOfBorrowAddresses(uint32 _bookId) external view returns(address[] memory) {
+    function historyOfBorrowAddresses(bytes32 _bookId) external view returns(address[] memory) {
         return historyAddresses[_bookId].addresses;
     }
 

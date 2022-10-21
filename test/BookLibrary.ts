@@ -17,9 +17,15 @@ describe("BookLibrary", function () {
         const addNewBookTx = await bookLibrary.addNewBook("The Godfather", "Mario Puzo", 5);
         await addNewBookTx.wait();
 
+        const encodePackedId = ethers.utils.concat([
+            ethers.utils.toUtf8Bytes("The Godfather"), 
+            ethers.utils.toUtf8Bytes("Mario Puzo")
+        ]);
+        const bookId = ethers.utils.keccak256(encodePackedId);
+        
         const book = await bookLibrary.books(0);
         
-        expect(book.id).to.equal(1);
+        expect(book.id).to.equal(bookId);
         expect(book.name).to.equal("The Godfather");
         expect(book.author).to.equal("Mario Puzo");
         expect(book.copies).to.equal(5);

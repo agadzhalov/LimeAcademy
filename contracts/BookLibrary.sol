@@ -14,7 +14,7 @@ contract BookLibrary is Ownable {
     struct Book {
         string name;
         string author;
-        uint32 id;
+        bytes32 id;
         uint32 copies;
     }
 
@@ -22,13 +22,14 @@ contract BookLibrary is Ownable {
 
     mapping(string => bool) public isBookAdded;
 
-    mapping(uint32 => uint32) public availableCopiesMap; // id => copies
-    mapping(uint32 => bool) public isCopyInserted; // id -> bool
-    mapping(uint32 => uint) public availableIdToIndex; // id => index of array
+    mapping(bytes32 => uint32) public availableCopiesMap; // id => copies
+    mapping(bytes32 => bool) public isCopyInserted; // id -> bool
+    mapping(bytes32 => uint) public availableIdToIndex; // id => index of array
     
     struct AvailableBooks {
-        uint32 id;
+        bytes32 id;
         string name;
+        string author;
         uint32 copies;
     }
     
@@ -41,34 +42,29 @@ contract BookLibrary is Ownable {
         _;
     }
 
-    modifier onlyExistingBookIds(uint32 _bookId) {
-        require (_bookId <= books.length, "Non existing book ID");
+    modifier onlyExistingBookIds(bytes32 _bookId) {
+        require (isCopyInserted[_bookId], "Non existing book ID");
         _;
     }
 
     function addNewBook(string memory _name, string memory _author, uint32 _copies) public onlyOwner onlyUniqueBooks(_name) {
         require(bytes(_name).length != 0 && bytes(_author).length != 0, "Book title and author can not be empty");
         require (_copies > 0, "New books' copies must be more than zero");
-        uint32 newBookId = _generateNewBookId();
+        bytes32 newBookId = keccak256(abi.encodePacked(_name, _author));
         books.push(Book(_name, _author, newBookId, _copies));
         isBookAdded[_name] = true;
-        setAvailableCopies(newBookId, _name, _copies);
+        setAvailableCopies(newBookId, _name, _author, _copies);
         emit BookAddedEvent(_name, _author, _copies);
     }
 
-    function _generateNewBookId() private returns(uint32){
-        _bookIds.increment();
-        return uint32(_bookIds.current());
-    }
-
-    function setAvailableCopies(uint32 _bookId, string memory _name, uint32 _copies) internal {
+    function setAvailableCopies(bytes32 _bookId, string memory _name, string memory _author, uint32 _copies) internal {
         availableCopiesMap[_bookId] = _copies;
         isCopyInserted[_bookId] = true;
-        allBooksAvailability.push(AvailableBooks(_bookId, _name, _copies));
+        allBooksAvailability.push(AvailableBooks(_bookId, _name, _author, _copies));
         availableIdToIndex[_bookId] = allBooksAvailability.length - 1;
     }
 
-    function updateAvailableCopies(uint32 _bookId, uint32 _copies) internal {
+    function updateAvailableCopies(bytes32 _bookId, uint32 _copies) internal {
         availableCopiesMap[_bookId] = _copies;
         allBooksAvailability[availableIdToIndex[_bookId]].copies = availableCopiesMap[_bookId];
     }
