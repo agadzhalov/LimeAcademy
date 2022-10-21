@@ -143,7 +143,7 @@ describe("BookBorrow", function () {
         const borrowABookTx = await bookBorrow.borrowABook(bookId);
         await borrowABookTx.wait();
         
-        const book = await bookBorrow.books(0);
+        const book = await bookBorrow.allBooks(0);
         await expect(borrowABookTx).to.emit(bookBorrow, 'BookBorrowedEvent').withArgs(book.name, book.author);
     });
 
@@ -157,7 +157,7 @@ describe("BookBorrow", function () {
         const returnBookTx = await bookBorrow.returnBook(bookId);
         await returnBookTx.wait();
 
-        const book = await bookBorrow.books(0);
+        const book = await bookBorrow.allBooks(0);
         await expect(returnBookTx).to.emit(bookBorrow, 'BookReturnEvent').withArgs(book.name, book.author);
     });
 });

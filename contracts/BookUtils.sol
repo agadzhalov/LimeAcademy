@@ -6,8 +6,8 @@ import "./BookBorrow.sol";
 
 contract BookUtils is BookBorrow {
 
-    function showAvailableBooks() external view returns(AvailableBooks[] memory) {
-        return allBooksAvailability;
+    function showAvailableBooks() external view returns(Book[] memory) {
+        return allBooks;
     }
 
     function historyOfBorrowAddresses(bytes32 _bookId) external view returns(address[] memory) {

@@ -23,8 +23,8 @@ describe("BookLibrary", function () {
         ]);
         const bookId = ethers.utils.keccak256(encodePackedId);
         
-        const book = await bookLibrary.books(0);
-        
+        const book = await bookLibrary.allBooks(0);
+
         expect(book.id).to.equal(bookId);
         expect(book.name).to.equal("The Godfather");
         expect(book.author).to.equal("Mario Puzo");
@@ -56,7 +56,7 @@ describe("BookLibrary", function () {
         const addNewBookTx = await bookLibrary.addNewBook("The Godfather", "Mario Puzo", 5);
         await addNewBookTx.wait();
 
-        const book = await bookLibrary.books(0);
+        const book = await bookLibrary.allBooks(0);
         await expect(addNewBookTx).to.emit(bookLibrary, 'BookAddedEvent').withArgs(book.name, book.author, book.copies);
     });
 

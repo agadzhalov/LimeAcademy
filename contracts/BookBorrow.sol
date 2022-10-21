@@ -25,14 +25,14 @@ contract BookBorrow is BookLibrary {
         borrowedBooks[msg.sender][_bookId] = true;
         updateAvailableCopies(_bookId, availableCopiesMap[_bookId] - 1);
         addAddressBorrowedABook(_bookId, msg.sender);
-        emit BookBorrowedEvent(allBooksAvailability[availableIdToIndex[_bookId]].name, allBooksAvailability[availableIdToIndex[_bookId]].author);
+        emit BookBorrowedEvent(allBooks[availableIdToIndex[_bookId]].name, allBooks[availableIdToIndex[_bookId]].author);
     }
 
     function returnBook(bytes32 _bookId) external onlyExistingBookIds(_bookId) {
         require (borrowedBooks[msg.sender][_bookId] == true, "You didn't borrow this book");
         borrowedBooks[msg.sender][_bookId] = false;
         updateAvailableCopies(_bookId, availableCopiesMap[_bookId] + 1);
-        emit BookReturnEvent(allBooksAvailability[availableIdToIndex[_bookId]].name, allBooksAvailability[availableIdToIndex[_bookId]].author);
+        emit BookReturnEvent(allBooks[availableIdToIndex[_bookId]].name, allBooks[availableIdToIndex[_bookId]].author);
     }
 
     /**
