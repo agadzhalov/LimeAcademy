@@ -1,41 +1,33 @@
-import { ethers } from "hardhat";
-import BookUtils from "./../artifacts/contracts/BookUtils.sol/BookUtils.json";
 import * as dotenv from "dotenv";
+import Interact from "./utils/interact";
 
 dotenv.config();
 
 const interactGoerli = (async() => {
-    
-    /**
-     * PROVIDER/NODE
-     */
-    const provider = new ethers.providers.JsonRpcProvider(process.env.RPC_URL);
-
-    /**
-     * WALLET
-     */
+    const PROVIDER_RPC  = process.env.RPC_URL !== undefined ? process.env.RPC_URL : ""; 
     const PRIVATE_KEY = process.env.PRIVATE_KEY !== undefined ? process.env.PRIVATE_KEY : "";
-    const wallet = new ethers.Wallet(PRIVATE_KEY, provider);
-    const balance = await wallet.getBalance();
-    console.log("ETH Balance: " + ethers.utils.formatEther(balance))
+    const CONTRACT_ADDRESS = "0x992B8328B6bC2736525883759C764822D05ed4Ea";
 
-    /**
-     * CONTRACT
-     */
-    const contractAddress = "0x992B8328B6bC2736525883759C764822D05ed4Ea";
-    const bookUtilsContract = new ethers.Contract(contractAddress, BookUtils.abi, wallet);
-    
-    // 1. Creates a book
-    const addNewBook = await bookUtilsContract.addNewBook("The Godfather", "Mario Puzo", 5); //already added
-    const addNewBookTx = await addNewBook.wait();
-    if (addNewBookTx.status != 1) {
-        console.log("Transaction failed");
-        return;
-    }
+    const interact = new Interact(PROVIDER_RPC, PRIVATE_KEY, CONTRACT_ADDRESS);
+
+    // 1. Creates book
+    await interact.addNewBook("The Godfather", "Mario Puzo", 5).catch((error) => {});
+    await interact.addNewBook("Hooked", "Nir Eyal", 1).catch((error) => {});
 
     // 2. Checks all available books
-    const checkAvailableBooks = await bookUtilsContract.showAvailableBooks();
-    console.log(checkAvailableBooks);
+    await interact.checkAvailableBooks();
+
+    // 3. Rents a book
+    await interact.borrowABook(interact.getBookHashedId("Hooked", "Nir Eyal")).catch((error) => {});
+
+    // 4. Checks if a book is borrowed by ID
+    await interact.checkIfBorrowedByBookId(interact.getBookHashedId("Hooked", "Nir Eyal")).catch((error) => {});
+
+    // 5. Returns a book
+    await interact.returnABook(interact.getBookHashedId("Hooked", "Nir Eyal")).catch((error) => {});
+
+    // 6. Checks availability of a book
+    await interact.checkAvailabilityOfBookById(interact.getBookHashedId("Hooked", "Nir Eyal")).catch((error) => {});
 })
 
 interactGoerli();

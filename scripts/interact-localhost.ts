@@ -1,4 +1,7 @@
 import Interact from "./utils/interact";
+import * as dotenv from "dotenv";
+
+dotenv.config();
 
 const interactLocally = (async() => {
     const PROVIDER_RPC  = "http://127.0.0.1:8545";
