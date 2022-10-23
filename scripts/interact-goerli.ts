@@ -1,5 +1,5 @@
-import * as dotenv from "dotenv";
 import Interact from "./utils/interact";
+import * as dotenv from "dotenv";
 
 dotenv.config();
 
