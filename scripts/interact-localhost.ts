@@ -11,8 +11,8 @@ const interactLocally = (async() => {
     /**
      * WALLET
      */
-    // @TODO import from env
-    const wallet = new ethers.Wallet("0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80", provider);
+    const LOCAL_PRIVATE_KEY = process.env.LOCAL_PRIVATE_KEY !== undefined ? process.env.LOCAL_PRIVATE_KEY : "";;
+    const wallet = new ethers.Wallet(LOCAL_PRIVATE_KEY, provider);
     const balance = await wallet.getBalance();
     console.log(balance.toString())
     console.log(ethers.utils.formatEther(balance))
@@ -20,7 +20,6 @@ const interactLocally = (async() => {
     /**
      * CONTRACT
      */
-    // @TODO import from env
     const contractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
     const bookUtilsContract = new ethers.Contract(contractAddress, BookUtils.abi, wallet);
 
@@ -47,7 +46,7 @@ const interactLocally = (async() => {
 
 interactLocally();
 
-const addNewBook = (async(contract: any, name: string, author: string, copies: number) => {
+const addNewBook = (async(contract: any, name: string, author: string, copies: number) : Promise<void> => {
     const addNewBook = await contract.addNewBook(name, author, copies);
     const addNewBookTx = await addNewBook.wait();
     if (addNewBookTx.status != 1) {
@@ -56,12 +55,12 @@ const addNewBook = (async(contract: any, name: string, author: string, copies: n
     console.log("Book Added: " + name + ", " + author);
 });
 
-const checkAvailableBooks = (async(contract: any) => {
+const checkAvailableBooks = (async(contract: any) : Promise<void> => {
     const checkAvailableBooks = await contract.showAvailableBooks();
     console.log("Books availability: ", await checkAvailableBooks);
 });
 
-const borrowABook = (async(contract: any, bookId: string) => {
+const borrowABook = (async(contract: any, bookId: string) : Promise<void> => {
     const borrowBook = await contract.borrowABook(bookId);
     const borrowBookTx = await borrowBook.wait();
     if (borrowBookTx.status != 1) {
@@ -70,12 +69,12 @@ const borrowABook = (async(contract: any, bookId: string) => {
     console.log("Book rented: " + bookId);
 });
 
-const checkIfBorrowedByBookId = (async(contract: any, address: string, bookId: string) => {
+const checkIfBorrowedByBookId = (async(contract: any, address: string, bookId: string) : Promise<void> => {
     const isBookBorrowedBy = await contract.borrowedBooks(address, bookId);
     console.log(isBookBorrowedBy  ? "YES, book is borrowed by " : "NO, book is NOT borrowed by", address);
 });
 
-const returnABook = (async(contract: any, bookId: string) => {
+const returnABook = (async(contract: any, bookId: string) : Promise<void> => {
     const returnABook = await contract.returnBook(bookId);
     const returnABookTx = await returnABook.wait();
     if (returnABookTx.status != 1) {
@@ -89,7 +88,7 @@ const returnABook = (async(contract: any, bookId: string) => {
  * @TODO think more how to handle when book is not in the list
  * p.s. if not exisiting always returns 0 index
  */
- const checkAvailabilityOfBookById = (async(contract: any, bookId: string) => {
+ const checkAvailabilityOfBookById = (async(contract: any, bookId: string) : Promise<void> => {
     const bookIndex = await contract.availableIdToIndex(bookId);
     const book = await contract.allBooks(bookIndex);
     console.log(book.name, book.author, "| Available copies: " + book.copies, );
