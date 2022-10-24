@@ -6,7 +6,7 @@ dotenv.config();
 const interactGoerli = (async() => {
     const PROVIDER_RPC  = process.env.RPC_URL !== undefined ? process.env.RPC_URL : ""; 
     const PRIVATE_KEY = process.env.PRIVATE_KEY !== undefined ? process.env.PRIVATE_KEY : "";
-    const CONTRACT_ADDRESS = "0x992B8328B6bC2736525883759C764822D05ed4Ea";
+    const CONTRACT_ADDRESS = "0xbAFa637b2d822974EAaE803f1236811AeC1090D5";
 
     const interact = new Interact(PROVIDER_RPC, PRIVATE_KEY, CONTRACT_ADDRESS);
 

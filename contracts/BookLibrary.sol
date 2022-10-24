@@ -16,10 +16,10 @@ contract BookLibrary is Ownable {
     
     Book[] public allBooks;
 
-    mapping(bytes32 => bool) public isBookAdded;
+    mapping(bytes32 => bool) internal isBookAdded;
 
-    mapping(bytes32 => uint32) public availableCopiesMap; // id => copies
-    mapping(bytes32 => bool) public isCopyInserted; // id -> bool
+    mapping(bytes32 => uint32) internal availableCopiesMap; // id => copies
+    mapping(bytes32 => bool) internal isCopyInserted; // id -> bool
     mapping(bytes32 => uint) public availableIdToIndex; // id => index of array
     
     event BookAddedEvent(string name, string author, uint32 copies);

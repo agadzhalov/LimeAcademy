@@ -27,7 +27,7 @@ const interactLocally = (async() => {
     await interact.returnABook(interact.getBookHashedId("Hooked", "Nir Eyal")).catch((error) => {});
 
     // 6. Checks availability of a book
-    await interact.checkAvailabilityOfBookById(interact.getBookHashedId("Hooked", "Nir Eyal")).catch((error) => {});
+    await interact.checkAvailabilityOfBookById(interact.getBookHashedId("Hooked", "Nir Eyal")).catch((error) => {console.log(error)});
 });
 
 interactLocally();

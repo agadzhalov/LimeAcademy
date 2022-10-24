@@ -35,4 +35,4 @@ npx hardhat run deploy-goerli --network goerli
 
 Result is properly deployed and verified on Goerli testnet
 
-Example TX on Goerli: 0x992B8328B6bC2736525883759C764822D05ed4Ea
+Example TX on Goerli: 0xbAFa637b2d822974EAaE803f1236811AeC1090D5
