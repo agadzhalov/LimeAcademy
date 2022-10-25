@@ -9,3 +9,9 @@ typechain-types
 cache
 artifacts
 
+# contract type generation
+/contracts/types
+
+# next.js
+/.next/
+/out/
