@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "compile-contract-types": "typechain --target ethers-v5 --out-dir './contracts/types' './contracts/*.json'",
+    "compile-contract-types": "typechain --target ethers-v5 --out-dir ./contracts/types ./contracts/*.json",
     "postinstall": "yarn compile-contract-types"
   },
   "dependencies": {
